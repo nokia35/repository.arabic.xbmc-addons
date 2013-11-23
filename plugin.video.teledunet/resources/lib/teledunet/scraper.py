@@ -3,6 +3,7 @@ import re
 import urllib2
 from BeautifulSoup import BeautifulSoup
 from models import ChannelItem
+from hardcode import HARDCODED_STREAMS
 
 HEADER_REFERER = 'http://www.teledunet.com/'
 HEADER_HOST = 'www.teledunet.com'
@@ -81,11 +82,19 @@ def get_rtmp_params(channel_name):
 
 def get_channels():
     html = _html(HEADER_REFERER)
-    return [ChannelItem(el) for el in (html.findAll("div", {"class": "div_channel"}))]
+    channels = [ChannelItem(el=el) for el in (html.findAll("div", {"class": "div_channel"}))]
+
+    # Extend Teledunet list with custom hardcoded list created by community
+    channels.extend(__get_hardcoded_streams())
+    return channels
+
+
+def __get_hardcoded_streams():
+    return [ChannelItem(json=json) for json in HARDCODED_STREAMS]
 
 
 def debug():
-    #print get_channels()
+    print len(get_channels())
     #print __get_channel_time_player('2m')
     #print get_rtmp_params('2m')
     pass

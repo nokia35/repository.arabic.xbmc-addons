@@ -1,3 +1,9 @@
+2.0.2 (24.11.2013)
+ - added hardcoded streams that were curated by the XBMC community (including Al Jazeera Sport channels)
+
+2.0.1 (24.11.2013)
+ - dynamically generate PHP session ID instead of hardcode
+
 2.0.0 (24.11.2013)
  - fixed issue fetching stream timestamp from Teledunet by adding new required host headers
  - re-added browse by network and category

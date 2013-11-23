@@ -11,7 +11,7 @@ from resources.lib.teledunet import scraper
 from resources.lib.teledunet.api import TeledunetAPI
 
 
-CACHE_DURATION_MINUTES = 5 * 60     # Cache for 5hrs
+CACHE_DURATION_MINUTES = 24 * 60     # Cache for 5hrs
 
 plugin = Plugin()
 
@@ -136,7 +136,7 @@ def _art(file, *args):
 
 
 if __name__ == '__main__':
-    cache = plugin.get_storage('channels_cache.txt', TTL=CACHE_DURATION_MINUTES)
+    cache = plugin.get_storage('teledunet_cache.txt', TTL=CACHE_DURATION_MINUTES)
     api = TeledunetAPI(cache)
 
     if api:
