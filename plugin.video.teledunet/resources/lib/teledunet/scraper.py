@@ -7,7 +7,6 @@ from models import ChannelItem
 HEADER_REFERER = 'http://www.teledunet.com/'
 HEADER_HOST = 'www.teledunet.com'
 HEADER_USER_AGENT = 'Mozilla/5.0'
-HEADER_COOKIE = 'PHPSESSID=5ee89a09bf610767e0150512f90513ed'
 TELEDUNET_TIMEPLAYER_URL = 'http://www.teledunet.com/tv_/?channel=%s'
 
 cj = cookielib.CookieJar()
@@ -16,7 +15,7 @@ opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
 def _get(url):
     """Performs a GET request for the given url and returns the response"""
-    conn = urllib2.urlopen(url)
+    conn = opener.open(url)
     resp = conn.read()
     conn.close()
     return resp
@@ -27,6 +26,17 @@ def _html(url):
     return BeautifulSoup(_get(url), convertEntities=BeautifulSoup.HTML_ENTITIES)
 
 
+def __get_cookie_session():
+    # Fetch the main Teledunet website to be given a Session ID
+    _html('http://www.teledunet.com')
+
+    for cookie in cj:
+        if cookie.name == 'PHPSESSID':
+            return 'PHPSESSID=%s' % cookie.value
+
+    raise Exception('Cannot find PHP session from Teledunet')
+
+
 def __get_channel_time_player(channel_name):
     url = TELEDUNET_TIMEPLAYER_URL % channel_name
 
@@ -35,7 +45,7 @@ def __get_channel_time_player(channel_name):
     req.add_header('Referer', HEADER_REFERER)
     req.add_header('Host', HEADER_HOST)
     req.add_header('User-agent', HEADER_USER_AGENT)
-    req.add_header('Cookie', HEADER_COOKIE)
+    req.add_header('Cookie', __get_cookie_session())
 
     html = _get(req)
 
@@ -76,7 +86,7 @@ def get_channels():
 
 def debug():
     #print get_channels()
-    #print _get_channel_time_player('2m')
+    #print __get_channel_time_player('2m')
     #print get_rtmp_params('2m')
     pass
 
